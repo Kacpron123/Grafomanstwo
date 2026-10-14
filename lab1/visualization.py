@@ -15,7 +15,7 @@ def generate_visualization(graph: ig.Graph) -> Image.Image:
         y = center + radius * math.sin(alpha)
         return int(x), int(y)
     alpha = math.pi *2 / graph.vcount()
-    positions = [calculate_pos((math.pi*3/2+alpha*x)%360) for x in range(graph.vcount())]
+    positions = [calculate_pos(math.pi*3/2+alpha*x) for x in range(graph.vcount())]
 
     image = Image.new("RGB", (SIZE, SIZE), (255, 255, 255))
     draw = ImageDraw.Draw(image)
