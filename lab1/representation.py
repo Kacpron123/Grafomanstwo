@@ -1,8 +1,8 @@
 from enum import Enum
 
 import igraph as ig
-from common import print_matrix, read_matrix
-from validation import validate_adjacency_matrix, validate_incidence_matrix
+from common import print_matrix, print_adjacency_list, read_matrix, read_lines, parse_to_int
+from validation import validate_adjacency_matrix, validate_incidence_matrix, validate_adjacency_list
 
 ###### Adjacency Matrix
 
@@ -37,7 +37,6 @@ def export_adjacency_matrix(graph: ig.Graph) -> list[list[int]]:
 
 ###### Incidence Matrix
 
-
 def import_incidence_matrix(path: str) -> ig.Graph:
     """Reads incidence matrix from file and returns graph"""
     matrix = read_matrix(path)
@@ -52,6 +51,61 @@ def import_incidence_matrix(path: str) -> ig.Graph:
 
     return ig.Graph(n=len(matrix), edges=edges)
 
+def export_incidence_matrix(graph: ig.Graph) -> list[list[int]]:
+    """Converts graph into incidence matrix"""
+    n = graph.vcount()
+    edges = graph.get_edgelist()
+    k = len(edges)
+
+    matrix = [[0] * k for _ in range(n)]
+
+    for edge_idx, (u, v) in enumerate(edges):
+        matrix[u][edge_idx] = 1
+        matrix[v][edge_idx] = 1
+
+    return matrix
+
+###### Adjacency List
+def import_adjacency_list(path: str) -> ig.Graph:
+    """Reads adjacency list from file and returns graph"""
+    lines = read_lines(path)
+    adjacency = []
+
+    for line in lines:
+        if "." in line:
+            _, neighbours_str = line.split(".", 1)
+        else:
+            neighbours_str = line
+        neighbours = parse_to_int(neighbours_str)
+        adjacency.append(neighbours)
+
+    validate_adjacency_list(adjacency)
+    n = len(adjacency)
+
+    edges = [
+        (i, neighbour - 1)
+        for i, neighbours in enumerate(adjacency)
+        for neighbour in neighbours
+        if i < neighbour - 1
+    ]
+
+    return ig.Graph(n=n, edges=edges)
+
+
+def export_adjacency_list(graph: ig.Graph) -> list[list[int]]:
+    """Converts graph into adjacency list"""
+    n = graph.vcount()
+    adjacency = [[] for _ in range(n)]
+
+    for u, v in graph.get_edgelist():
+        adjacency[u].append(v + 1)
+        adjacency[v].append(u + 1)
+
+    for neighbours in adjacency:
+        neighbours.sort()
+
+    return adjacency
+
 
 ###### Conversion
 
@@ -64,16 +118,14 @@ class GraphFormat(Enum):
 
 EXPORTS = {
     GraphFormat.ADJACENCY_MATRIX: export_adjacency_matrix,
-    # TODO Uncomment after implementation
-    # GraphFormat.INCIDENCE_MATRIX: export_incidence_matrix,
-    # GraphFormat.ADJACENCY_LIST: export_adjacency_list
+    GraphFormat.INCIDENCE_MATRIX: export_incidence_matrix,
+    GraphFormat.ADJACENCY_LIST: export_adjacency_list
 }
 
 PRINTS = {
     GraphFormat.ADJACENCY_MATRIX: print_matrix,
     GraphFormat.INCIDENCE_MATRIX: print_matrix,
-    # TODO Uncomment after implementation
-    # GraphFormat.ADJACENCY_LIST: print_adjacency_list
+    GraphFormat.ADJACENCY_LIST: print_adjacency_list
 }
 
 
@@ -87,41 +139,6 @@ def convert(graph: ig.Graph, graph_format: GraphFormat) -> list[list[int]]:
     """Converts graph into given representation"""
     return EXPORTS[graph_format](graph)
 
-
-# TODO (Julka)
-#
-###### Incidence Matrix
-# def export_incidence_matrix(graph: ig.Graph) -> list[list[int]]
-#
-###### Adjacency List
-# File format (vertices numbered from 1, neighbours separated by spaces):
-#     1. 2 5
-#     2. 1 3 4 5
-#     3.            <- isolated vertex
-#
-# def import_adjacency_list(path: str) -> ig.Graph
-#     - use read_lines() and parse_to_int() from common.py
-#     - cut "1." from each line
-#     - convert numbers
-#     - validate
-#     - return ig.Graph(n=n, edges=edges)
-#
-# def export_adjacency_list(graph: ig.Graph) -> list[list[int]]
-#     - neighbours of every vertex, sorted, numbered from 1
-#     - build it from graph.get_edgelist()
-#
-# def print_adjacency_list(adjacency: list[list[int]], file=None) -> None
-#     - in common.py, next to print_matrix
-#     - prints "1. 2 5" lines, file=None means screen (same as print_matrix)
-#     - hint: print(f"{vertex}.", *neighbours, file=file)
-#
-###### validation.py
-# def validate_adjacency_list(adjacency: list[list[int]]) -> None
-#     - reuse _check_not_empty()
-#     - add small _check_... functions
-#
-###### After that
-#     - Uncomment entries in EXPORTS and PRINTS
 
 if __name__ == "__main__":
     graph = import_adjacency_matrix("data/adjacency_matrix.txt")

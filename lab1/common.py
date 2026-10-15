@@ -21,3 +21,8 @@ def print_matrix(matrix: list[list[int]], file=None) -> None:
     """Prints matrix to the screen or to an open file if given"""
     for row in matrix:
         print(*row, file=file)
+
+def print_adjacency_list(adjacency: list[list[int]], file=None) -> None:
+    """Prints adjacency list to the screen or to an open file if given"""
+    for vertex, neighbours in enumerate(adjacency, 1):
+        print(f"{vertex}.", *neighbours, file=file)

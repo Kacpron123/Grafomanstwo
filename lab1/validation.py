@@ -70,3 +70,19 @@ def validate_incidence_matrix(matrix: list[list[int]]) -> None:
     _check_zeroes_and_ones(matrix)
     _check_two_vertices_per_edge(matrix)
     _check_unique_edges(matrix)
+
+def _check_adjacency_list_valid_vertices(adjacency: list[list[int]]) -> None:
+    """Raise ValueError if adjacency list contains invalid vertex indices"""
+    n = len(adjacency)
+    for vertex, neighbours in enumerate(adjacency, 1):
+        for neighbour in neighbours:
+            if not (1 <= neighbour <= n):
+                raise ValueError(f"Vertex {neighbour} out of range (1..{n})!")
+            if neighbour == vertex:
+                raise ValueError("Loops are not allowed in simple graphs!")
+
+
+def validate_adjacency_list(adjacency: list[list[int]]) -> None:
+    """Checks whether adjacency list describes a simple graph"""
+    _check_not_empty(adjacency)
+    _check_adjacency_list_valid_vertices(adjacency)
