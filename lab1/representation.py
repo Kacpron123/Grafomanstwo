@@ -72,10 +72,10 @@ def import_adjacency_list(path: str) -> ig.Graph:
     adjacency = []
 
     for line in lines:
-        if "." in line:
-            _, neighbours_str = line.split(".", 1)
-        else:
-            neighbours_str = line
+        if "." not in line:
+            raise ValueError(f"Invalid format (missing dot '.'): '{line}'")
+        
+        neighbours_str = line.split(".", 1)[1]
         neighbours = parse_to_int(neighbours_str)
         adjacency.append(neighbours)
 

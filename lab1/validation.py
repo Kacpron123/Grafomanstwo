@@ -82,7 +82,24 @@ def _check_adjacency_list_valid_vertices(adjacency: list[list[int]]) -> None:
                 raise ValueError("Loops are not allowed in simple graphs!")
 
 
+def _check_adjacency_list_unique_neighbours(adjacency: list[list[int]]) -> None:
+    """Raise ValueError if a vertex has duplicate neighbours (multiple edges)"""
+    for vertex, neighbours in enumerate(adjacency, 1):
+        if len(neighbours) != len(set(neighbours)):
+            raise ValueError(f"Vertex {vertex} has duplicate neighbours (multiple edges are not allowed)!")
+
+
+def _check_adjacency_list_symmetry(adjacency: list[list[int]]) -> None:
+    """Raise ValueError if adjacency list is not symmetrical (if u has v, v must have u)"""
+    # n = len(adjacency)
+    for u, neighbours in enumerate(adjacency, 1):
+        for v in neighbours:
+            if u not in adjacency[v - 1]:
+                raise ValueError(f"Asymmetry detected: vertex {v} does not list {u} as neighbour!")
+
 def validate_adjacency_list(adjacency: list[list[int]]) -> None:
     """Checks whether adjacency list describes a simple graph"""
     _check_not_empty(adjacency)
     _check_adjacency_list_valid_vertices(adjacency)
+    _check_adjacency_list_unique_neighbours(adjacency)
+    _check_adjacency_list_symmetry(adjacency)
