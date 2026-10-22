@@ -1,8 +1,8 @@
 from enum import Enum
 
 import igraph as ig
-from common import print_matrix, print_adjacency_list, read_matrix, read_lines, parse_to_int
-from validation import validate_adjacency_matrix, validate_incidence_matrix, validate_adjacency_list
+from lab1.common import print_matrix, print_adjacency_list, read_matrix, read_lines, parse_to_int
+from lab1.validation import validate_adjacency_matrix, validate_incidence_matrix, validate_adjacency_list
 
 ###### Adjacency Matrix
 
