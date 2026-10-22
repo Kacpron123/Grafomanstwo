@@ -26,6 +26,12 @@ def generate_visualization(graph: ig.Graph) -> Image.Image:
         color = attrs.get("color") or "gray"
         wid = attrs.get("width") or 2
         draw.line((x1, y1, x2, y2), fill=color, width=wid)
+        # Draw the edge weight if it exists
+        weight = attrs.get("weight")
+        if weight is not None:
+            mid_x = (x1 + x2) / 2 + 7  # Offset the text slightly to avoid overlapping with the edge
+            mid_y = (y1 + y2) / 2 + 7
+            draw.text((mid_x, mid_y), str(weight), fill="black", anchor="mm")
 
     for i, (x, y) in enumerate(positions):
         attrs = graph.vs[i].attributes()

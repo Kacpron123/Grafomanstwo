@@ -3,6 +3,7 @@
 from pathlib import Path
 import igraph as ig
 from datetime import datetime
+from PIL import Image, ImageDraw
 
 from lab1.random_graph.enums import ErdosRenyiModel
 from lab1.representation import GraphFormat
@@ -12,17 +13,18 @@ from lab1.validation import validate_adjacency_matrix, validate_incidence_matrix
 
 
 def generate_random_graph(
-        model: ErdosRenyiModel,
-        num_nodes: int,
+        model: ErdosRenyiModel = ErdosRenyiModel.G_N_L,
+        num_nodes: int | None = None,
         num_edges: int | None = None,
         edge_probability: float | None = None,
-        return_graph_format: GraphFormat = GraphFormat.ADJACENCY_LIST
+        return_graph_format: GraphFormat = GraphFormat.ADJACENCY_MATRIX
     ) -> list[list[int]]:
     """
     Generates a random graph represented as the specified format.
 
     Parameters:
         - model (ErdosRenyiModel): The model to use for generating the graph.
+            For possible values, see the ErdosRenyiModel enum.
         - num_nodes (int): The number of nodes in the graph.
         - num_edges (int | None): The number of edges in the graph.
             Must be in range [0, n*(n-1)/2] for G(n, l) model.
@@ -33,6 +35,8 @@ def generate_random_graph(
     Returns:
         - list: A list of lists representing the random graph.
     """
+    if num_nodes is None:
+        raise ValueError("num_nodes must be provided.")
     if num_nodes <= 0:
         raise ValueError("num_nodes must be a positive integer.")
     if model not in ErdosRenyiModel:
@@ -130,11 +134,20 @@ def generate_random_graph(
 if __name__ == "__main__":
     # Example usage
     # adjacency_matrix = generate_random_graph(ErdosRenyiModel.G_N_L, num_nodes=10, num_edges=8, return_graph_format=GraphFormat.ADJACENCY_MATRIX)
-    adjacency_matrix = generate_random_graph(ErdosRenyiModel.G_N_P, num_nodes=10, edge_probability=0.3, return_graph_format=GraphFormat.ADJACENCY_MATRIX)
+    model = ErdosRenyiModel.G_N_P
+    num_nodes = 10
+    edge_probability = 0.3
+    adjacency_matrix = generate_random_graph(model, num_nodes=num_nodes, edge_probability=edge_probability, return_graph_format=GraphFormat.ADJACENCY_MATRIX)
     n= len(adjacency_matrix)
     edges = [(i, j) for i in range(n) for j in range(i + 1, n) if adjacency_matrix[i][j] == 1]
     graph = ig.Graph(n=n, edges=edges)
     now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     path = Path("lab1") / "random_graph" / "results" / f"random_graph_{now}.png"
     path.parent.mkdir(parents=True, exist_ok=True)
-    generate_visualization(graph).save(path.absolute().as_posix())
+    image: Image.Image = generate_visualization(graph)
+    draw = ImageDraw.Draw(image)
+    if model == ErdosRenyiModel.G_N_L:
+        draw.text((10, 10), f"Model: {ErdosRenyiModel.G_N_L.value}, Nodes: {n}, Edges: {len(edges)}", fill="black")
+    elif model == ErdosRenyiModel.G_N_P:
+        draw.text((10, 10), f"Model: {ErdosRenyiModel.G_N_P.value}, Nodes: {n}, Edge Probability: 0.3", fill="black")
+    image.save(path.absolute().as_posix())
