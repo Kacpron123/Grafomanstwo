@@ -1,8 +1,8 @@
 from enum import Enum
 
 import igraph as ig
-from common import print_matrix, print_adjacency_list, read_matrix, read_lines, parse_to_int
-from validation import validate_adjacency_matrix, validate_incidence_matrix, validate_adjacency_list
+from lab1.common import print_matrix, print_adjacency_list, read_matrix, read_lines, parse_to_int
+from lab1.validation import validate_adjacency_matrix, validate_incidence_matrix, validate_adjacency_list
 
 ###### Adjacency Matrix
 
@@ -138,6 +138,43 @@ def save(data: list[list[int]], graph_format: GraphFormat, path: str) -> None:
 def convert(graph: ig.Graph, graph_format: GraphFormat) -> list[list[int]]:
     """Converts graph into given representation"""
     return EXPORTS[graph_format](graph)
+
+def export_igraph(graph: list[list[int]], format: GraphFormat) -> ig.Graph:
+    """
+    Converts graph from:
+        - Adjacency matrix
+        - Incidence matrix
+        - Adjacency list
+    into igraph.Graph
+    """
+    if format == GraphFormat.ADJACENCY_MATRIX:
+        validate_adjacency_matrix(graph)
+        n= len(graph)
+        edges = [(i, j) for i in range(n) for j in range(i + 1, n) if graph[i][j] == 1]
+        igraph = ig.Graph(n=n, edges=edges)
+        return igraph
+    elif format == GraphFormat.INCIDENCE_MATRIX:
+        validate_incidence_matrix(graph)
+        n = len(graph)
+        edges = []
+        for column in zip(*graph):
+            ends = [vertex for vertex, value in enumerate(column) if value == 1]
+            edges.append((ends[0], ends[1]))
+        igraph = ig.Graph(n=n, edges=edges)
+        return igraph
+    elif format == GraphFormat.ADJACENCY_LIST:
+        validate_adjacency_list(graph)
+        n = len(graph)
+        edges = [
+            (i, neighbour - 1)
+            for i, neighbours in enumerate(graph)
+            for neighbour in neighbours
+            if i < neighbour - 1
+        ]
+        igraph = ig.Graph(n=n, edges=edges)
+        return igraph
+    else:
+        raise ValueError(f"Unsupported graph format: {format}")
 
 
 if __name__ == "__main__":
