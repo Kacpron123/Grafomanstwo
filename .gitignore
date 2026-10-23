@@ -22,3 +22,6 @@ Thumbs.db
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Files from upel
+upel/

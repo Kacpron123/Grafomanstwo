@@ -37,6 +37,7 @@ def components(graph: ig.Graph) -> list[int]:
     
     Parameters:
         - graph: igraph.Graph object
+        - directed (bool): Whether the graph is directed.
         
     Returns:
         - list[int], a list for each node indicating the component it belongs to.

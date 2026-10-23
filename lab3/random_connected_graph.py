@@ -10,8 +10,9 @@ from lab1.random_graph.random_graph import generate_random_graph
 from lab2.components import components
 from lab1.representation import export_igraph, GraphFormat
 from lab1.visualization import generate_visualization
+from lab1.random_graph.random_graph import add_weights_to_edges
 
-def generate_random_connected_graph(num_nodes: int, min_num_edges: int) -> ig.Graph:
+def generate_random_connected_graph(num_nodes: int, min_num_edges: int, directed: bool = False, range_weights: tuple[int, int] = (1, 10)) -> ig.Graph:
     """
     Generate a random connected graph with the specified number of nodes.
     
@@ -23,7 +24,8 @@ def generate_random_connected_graph(num_nodes: int, min_num_edges: int) -> ig.Gr
     Args:
         num_nodes (int): The number of nodes in the graph.
         min_num_edges (int): The minimum number of edges in the graph.
-
+        directed (bool): Whether the graph should be directed.
+        range_weights (tuple[int, int]): The range (min, max) for the random weights.
     Returns:
         ig.Graph: A random connected graph with edges weighted.
     """
@@ -34,7 +36,8 @@ def generate_random_connected_graph(num_nodes: int, min_num_edges: int) -> ig.Gr
     if min_num_edges > num_nodes * (num_nodes - 1) // 2:
         raise ValueError(f"min_num_edges must be in range [0, {num_nodes * (num_nodes - 1) // 2}] for a simple graph.")
 
-    graph = export_igraph(generate_random_graph(num_nodes=num_nodes, num_edges=min_num_edges), GraphFormat.ADJACENCY_MATRIX)
+    graph = export_igraph(generate_random_graph(num_nodes=num_nodes, num_edges=min_num_edges, directed=directed), GraphFormat.ADJACENCY_MATRIX, directed)
+    graph = add_weights_to_edges(graph, range_weights)
     
     while len(set(components(graph))) > 1:  # While the graph is not connected
         # Get the list of connected components

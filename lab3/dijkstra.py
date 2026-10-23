@@ -62,7 +62,7 @@ def dijkstra(graph: ig.Graph, s: int) -> tuple[list[float], list[int | None]]:
         # Select the node u not in S with the smallest distance d[u]
         u = min((v for v in range(graph.vcount()) if v not in S), key=lambda v: d[v])
         S.add(u)  # Add u to the set of known shortest paths
-        for v in graph.neighbors(u):  # For each neighbor v of u
+        for v in graph.neighbors(u, mode="out"):  # For each neighbor v of u
             relax(u, v, graph, d, p)  # Relax the edge (u, v)
     return d, p
 

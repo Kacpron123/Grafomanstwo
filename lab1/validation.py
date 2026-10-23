@@ -13,12 +13,6 @@ def _check_rows_equal_length(matrix: list[list[int]]) -> None:
         raise ValueError("Rows have different lengths!")
 
 
-def _check_zeroes_and_ones(matrix: list[list[int]]) -> None:
-    """Raise ValueError if matrix has different numbers than 1 and 0!"""
-    if not all(value in (0, 1) for row in matrix for value in row):
-        raise ValueError("Matrix has different numbers than 1 and 0!")
-
-
 def _check_symmetric(matrix: list[list[int]]) -> None:
     """Raise ValueError if matrix is not symmetrical"""
     n = len(matrix)
@@ -32,10 +26,15 @@ def _check_zero_diagonal(matrix: list[list[int]]) -> None:
         raise ValueError("Diagonal does not have only 0!")
 
 
-def _check_two_vertices_per_edge(matrix: list[list[int]]) -> None:
+
+def _check_two_vertices_per_edge(matrix: list[list[int]], directed: bool = False) -> None:
     """Raise ValueError if edge does not have EXACTLY two vertices"""
-    if not all(sum(column) == 2 for column in zip(*matrix)):
-        raise ValueError("All of the columns MUST have EXACTLY two vertices!")
+    if directed:
+        if not all(sum(column) == 0 for column in zip(*matrix)):
+            raise ValueError("All of the columns MUST have EXACTLY two vertices!")
+    else:
+        if not all(sum(column) == 2 for column in zip(*matrix)):
+            raise ValueError("All of the columns MUST have EXACTLY two vertices!")
 
 
 def _check_unique_edges(matrix: list[list[int]]) -> None:
@@ -49,26 +48,36 @@ def _check_not_empty(matrix: list[list[int]]) -> None:
     """Raise ValueError if matrix is empty"""
     if not matrix:
         raise ValueError("Matrix is empty")
-
+    
+def _check_contains_only(matrix: list[list[int]], allowed_values: set[int]) -> None:
+    """Raise ValueError if matrix contains values not in allowed_values"""
+    if not all(value in allowed_values for row in matrix for value in row):
+        raise ValueError(f"Matrix contains values not in {allowed_values}!")
 
 ###### Main functions ######
 
 
-def validate_adjacency_matrix(matrix: list[list[int]]) -> None:
+def validate_adjacency_matrix(matrix: list[list[int]], directed: bool = False) -> None:
     """Checks whether adjacency matrix describes a simple graph"""
     _check_not_empty(matrix)
     _check_square(matrix)
-    _check_zeroes_and_ones(matrix)
+    _check_contains_only(matrix, {0, 1})
     _check_zero_diagonal(matrix)
-    _check_symmetric(matrix)
+    if not directed:
+        _check_symmetric(matrix)
 
 
-def validate_incidence_matrix(matrix: list[list[int]]) -> None:
-    """Checks whether incidence matrix describes a simple graph"""
+
+
+def validate_incidence_matrix(matrix: list[list[int]], directed: bool = False) -> None:
+    """Raise ValueError if incidence matrix is invalid"""
     _check_not_empty(matrix)
     _check_rows_equal_length(matrix)
-    _check_zeroes_and_ones(matrix)
-    _check_two_vertices_per_edge(matrix)
+    if not directed:
+        _check_contains_only(matrix, {0, 1})
+    else:
+        _check_contains_only(matrix, {0, 1, -1})
+    _check_two_vertices_per_edge(matrix, directed)
     _check_unique_edges(matrix)
 
 def _check_adjacency_list_valid_vertices(adjacency: list[list[int]]) -> None:
@@ -97,9 +106,10 @@ def _check_adjacency_list_symmetry(adjacency: list[list[int]]) -> None:
             if u not in adjacency[v - 1]:
                 raise ValueError(f"Asymmetry detected: vertex {v} does not list {u} as neighbour!")
 
-def validate_adjacency_list(adjacency: list[list[int]]) -> None:
+def validate_adjacency_list(adjacency: list[list[int]], directed: bool = False) -> None:
     """Checks whether adjacency list describes a simple graph"""
     _check_not_empty(adjacency)
     _check_adjacency_list_valid_vertices(adjacency)
     _check_adjacency_list_unique_neighbours(adjacency)
-    _check_adjacency_list_symmetry(adjacency)
+    if not directed:
+        _check_adjacency_list_symmetry(adjacency)

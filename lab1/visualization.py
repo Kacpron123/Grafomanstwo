@@ -26,6 +26,16 @@ def generate_visualization(graph: ig.Graph) -> Image.Image:
         color = attrs.get("color") or "gray"
         wid = attrs.get("width") or 2
         draw.line((x1, y1, x2, y2), fill=color, width=wid)
+        if graph.is_directed():
+            # Draw an arrowhead for directed edges
+            arrow_length = 23
+            arrow_angle = math.pi / 6  # 30 degrees
+            angle = math.atan2(y2 - y1, x2 - x1)
+            arrow_x1 = x2 - arrow_length * math.cos(angle - arrow_angle)
+            arrow_y1 = y2 - arrow_length * math.sin(angle - arrow_angle)
+            arrow_x2 = x2 - arrow_length * math.cos(angle + arrow_angle)
+            arrow_y2 = y2 - arrow_length * math.sin(angle + arrow_angle)
+            draw.polygon([(x2 - RADIUS_NODE * math.cos(angle), y2 - RADIUS_NODE * math.sin(angle)), (arrow_x1, arrow_y1), (arrow_x2, arrow_y2)], fill=color)
         # Draw the edge weight if it exists
         weight = attrs.get("weight")
         if weight is not None:
