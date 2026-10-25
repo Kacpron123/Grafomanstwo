@@ -17,7 +17,7 @@ def test_validate_adjacency_matrix_valid():
         ([[0, 1], [1]], "Matrix is not a square!"),
         (
             [[0, 2], [2, 0]],
-            "Matrix has different numbers than 1 and 0!",
+            "Matrix contains values not in",
         ),
         (
             [[1, 0], [0, 0]],
@@ -50,7 +50,7 @@ def test_validate_incidence_matrix_valid():
         ([[1, 0], [1]], "Rows have different lengths!"),
         (
             [[1, 2], [1, 0]],
-            "Matrix has different numbers than 1 and 0!",
+            "Matrix contains values not in",
         ),
         (
             [[1, 0], [1, 0]],
