@@ -1,6 +1,7 @@
 from PIL import Image, ImageDraw
 import igraph as ig
 import math
+from pathlib import Path
 
 SIZE = 500
 # procent of halfradius
@@ -70,6 +71,27 @@ class build_GIF:
             duration=self.duration,
             loop=0,
         )
+        
+
+def draw_step(graph: ig.Graph, u: int, v: int) -> None:
+    graph.es[graph.get_eid(u, v)]["color"] = "red"
+    graph.vs[u]["color"] = None
+    graph.vs[v]["color"] = "green"
+
+
+def save_cycle_gif(graph: ig.Graph, cycle: list[int], path: Path) -> None:
+    vis = graph.copy()
+    vis.vs[cycle[0]]["color"] = "green"
+    images = [generate_visualization(vis)]
+
+    for u, v in zip(cycle, cycle[1:]):
+        draw_step(vis, u, v)
+        images.append(generate_visualization(vis))
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    build_GIF(images).save(path.as_posix())
+
+
 # examples
 if __name__ == "__main__":
     g = ig.Graph.Erdos_Renyi(n=15, p=1, directed=False)
