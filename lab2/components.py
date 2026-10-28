@@ -28,7 +28,7 @@ def components_R(nr: int, v: int, graph: list[list[int]], comp: list[int]) -> No
     """
     for u in range(len(graph)):
         if graph[v][u] == 1 and comp[u] == -1:  # if there's an edge and the node hasn't been assigned a component
-            comp[u] = nr  # Assign the current component number to the node
+            comp[u] = nr 
             components_R(nr, u, graph, comp)  # Recursively process the connected node
 
 def components(graph: ig.Graph) -> list[int]:
@@ -49,7 +49,7 @@ def components(graph: ig.Graph) -> list[int]:
     
     for v in range(len(adj_matrix)):
         if comp[v] == -1: # if the node has not been assigned a component
-            nr += 1 # increment component number
+            nr += 1
             comp[v] = nr # assign the current node to the new component
             components_R(nr, v, adj_matrix, comp) # recursively assign component numbers to connected nodes
 
@@ -76,7 +76,7 @@ def print_largest_component_info(graph: ig.Graph) -> None:
 
 
 if __name__ == "__main__":
-    print("--- Test Zadania 3 połączonego z Zadaniem 1 (Ciąg graficzny) ---")
+    print("--- Zadanie 3 - Ciąg graficzny ---")
     
     sequence = [4, 2, 2, 3, 2, 1, 4, 2, 2, 2, 2]
     
@@ -84,5 +84,5 @@ if __name__ == "__main__":
     
     graph = build_graph_from_graphic_sequence(sequence)
     
-    print("\nWynik (Listing 1):")
+    print("\nWynik:")
     print_largest_component_info(graph)

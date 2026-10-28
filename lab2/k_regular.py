@@ -57,7 +57,7 @@ def generate_k_regular_graph(n: int, k: int) -> ig.Graph:
 
 
 if __name__ == "__main__":
-    print("--- Test Zadania 5: Grafy k-regularne ---")
+    print("--- Zadanie 5: Grafy k-regularne ---")
     
     n, k = 7, 2
     print(f"Generowanie grafu dla n = {n}, k = {k}...")
@@ -68,6 +68,6 @@ if __name__ == "__main__":
     output_filename = f"k_regular_n{n}_k{k}.png"
     img.save(output_filename)
     
-    print(f"[SUKCES] Wygenerowano losowy graf k-regularny!")
+    print(f"Wygenerowano losowy graf k-regularny")
     print(f"Liczba wierzchołków: {graph.vcount()}, Liczba krawędzi: {graph.ecount()}")
     print(f"Wizualizację zapisano do pliku: {output_filename}")
