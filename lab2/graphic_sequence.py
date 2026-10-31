@@ -1,6 +1,8 @@
 import igraph as ig
 
-from lab1.visualization import generate_visualization
+from lab1.visualization import generate_visualization, build_GIF
+from lab2 import graphic_sequence
+
 
 def validate_graphic_sequence(sequence: list[int]) -> bool:
     n=len(sequence)
@@ -36,8 +38,7 @@ def build_graph_from_graphic_sequence(sequence: list[int], gif=False) -> ig.Grap
         d_max = degrees[u]
         if d_max==0:
             if gif:
-                from lab1 import visualization
-                visualization.build_GIF(images).save("graph.gif")
+                build_GIF(images).save("graph.gif")
             return ret_graph
         for i in range(1, d_max+1):
             v = order[i]
@@ -51,4 +52,6 @@ def build_graph_from_graphic_sequence(sequence: list[int], gif=False) -> ig.Grap
 
 
 if __name__ == "__main__":
-    build_graph_from_graphic_sequence([1,3,3,4,2,2,1],gif=True)
+    graphic_seq=[4,2,2,3,2,1,4,2,2,2,2]
+    graph = build_graph_from_graphic_sequence(graphic_seq,gif=True)
+    generate_visualization(graph).save("graph.png")    

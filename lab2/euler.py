@@ -76,7 +76,7 @@ def fleury(graph: ig.Graph, start: int = 0) -> list[int]:
 
 
 if __name__ == "__main__":
-    n = 8
+    n = 11
 
     graph, sequence = generate_eulerian_graph(n)
     cycle = fleury(graph)

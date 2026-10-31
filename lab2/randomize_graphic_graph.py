@@ -1,6 +1,8 @@
 import igraph as ig
 import random
 
+from lab1 import visualization
+from lab2 import graphic_sequence
 def randomize_graphic_graph(graph: ig.Graph) -> None:
     def rewire(graph: ig.Graph, n_steps) -> ig.Graph:
         n_verticies = graph.vcount()
@@ -44,11 +46,11 @@ def randomize_graphic_graph(graph: ig.Graph) -> None:
     return return_graph
 
 if __name__ == "__main__":
-    from lab1 import visualization
-    from lab2 import graphic_sequence
-    g = graphic_sequence.build_graph_from_graphic_sequence([1, 3, 2, 3, 2, 4, 1])
+    graphic_seq = [6,6,6,4,4,3,3]
+    g = graphic_sequence.build_graph_from_graphic_sequence(graphic_sequence)
     images=[]
-    for i in range(10):
+    for i in range(100):
         g = randomize_graphic_graph(g)
         images.append(visualization.generate_visualization(g))
+        visualization.generate_visualization(g).save("graph.png")
     visualization.build_GIF(images).save("graph.gif")

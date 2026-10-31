@@ -179,17 +179,25 @@ def add_weights_to_edges(graph: ig.Graph, range_weights: tuple[int, int] = (1, 1
         
 if __name__ == "__main__":
     # Example usage
-    # adjacency_matrix = generate_random_graph(ErdosRenyiModel.G_N_L, num_nodes=10, num_edges=8, return_graph_format=GraphFormat.ADJACENCY_MATRIX)
+    # generating as number vericies & edges 
+    num_nodes=10
+    num_edges=8
+    adjacency_matrix = generate_random_graph(ErdosRenyiModel.G_N_L, num_nodes=num_nodes, num_edges=num_edges, return_graph_format=GraphFormat.ADJACENCY_MATRIX)
+
+    # generating as number vericies & probability 
     model = ErdosRenyiModel.G_N_P
     num_nodes = 10
     edge_probability = 0.3
     adjacency_matrix = generate_random_graph(model, num_nodes=num_nodes, edge_probability=edge_probability, return_graph_format=GraphFormat.ADJACENCY_MATRIX)
+    
     n= len(adjacency_matrix)
     edges = [(i, j) for i in range(n) for j in range(i + 1, n) if adjacency_matrix[i][j] == 1]
     graph = ig.Graph(n=n, edges=edges)
+
     now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     path = Path("lab1") / "random_graph" / "results" / f"random_graph_{now}.png"
     path.parent.mkdir(parents=True, exist_ok=True)
+    
     image: Image.Image = generate_visualization(graph)
     draw = ImageDraw.Draw(image)
     if model == ErdosRenyiModel.G_N_L:
