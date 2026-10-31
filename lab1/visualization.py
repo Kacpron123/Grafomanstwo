@@ -8,17 +8,22 @@ SIZE = 500
 radius = 0.8 
 RADIUS_NODE = 10
 
-def generate_visualization(graph: ig.Graph) -> Image.Image:
-    center = SIZE // 2
-    radius = center * 0.8
-    def calculate_pos(alpha: float) -> tuple[int, int]:
-        x = center + radius * math.cos(alpha)
-        y = center + radius * math.sin(alpha)
-        return int(x), int(y)
-    alpha = math.pi *2 / graph.vcount()
-    positions = [calculate_pos(math.pi*3/2+alpha*x) for x in range(graph.vcount())]
+def generate_visualization(
+    graph: ig.Graph,
+    positions: list[tuple[int, int]] | None = None,
+    size: tuple[int, int] = (SIZE, SIZE),
+) -> Image.Image:
+    if positions is None:
+        center = SIZE // 2
+        radius = center * 0.8
+        def calculate_pos(alpha: float) -> tuple[int, int]:
+            x = center + radius * math.cos(alpha)
+            y = center + radius * math.sin(alpha)
+            return int(x), int(y)
+        alpha = math.pi *2 / graph.vcount()
+        positions = [calculate_pos(math.pi*3/2+alpha*x) for x in range(graph.vcount())]
 
-    image = Image.new("RGB", (SIZE, SIZE), (255, 255, 255))
+    image = Image.new("RGB", size, (255, 255, 255))
     draw = ImageDraw.Draw(image)
     for edge in graph.es:
         x1, y1 = positions[edge.source]
@@ -37,12 +42,14 @@ def generate_visualization(graph: ig.Graph) -> Image.Image:
             arrow_x2 = x2 - arrow_length * math.cos(angle + arrow_angle)
             arrow_y2 = y2 - arrow_length * math.sin(angle + arrow_angle)
             draw.polygon([(x2 - RADIUS_NODE * math.cos(angle), y2 - RADIUS_NODE * math.sin(angle)), (arrow_x1, arrow_y1), (arrow_x2, arrow_y2)], fill=color)
-        # Draw the edge weight if it exists
-        weight = attrs.get("weight")
-        if weight is not None:
+        # Draw the edge label if it exists, otherwise the edge weight
+        label = attrs.get("label")
+        if label is None:
+            label = attrs.get("weight")
+        if label is not None:
             mid_x = (x1 + x2) / 2 + 7  # Offset the text slightly to avoid overlapping with the edge
             mid_y = (y1 + y2) / 2 + 7
-            draw.text((mid_x, mid_y), str(weight), fill="black", anchor="mm")
+            draw.text((mid_x, mid_y), str(label), fill="black", anchor="mm")
 
     for i, (x, y) in enumerate(positions):
         attrs = graph.vs[i].attributes()
@@ -53,7 +60,7 @@ def generate_visualization(graph: ig.Graph) -> Image.Image:
             outline=color,
             width=3,
         )
-        draw.text((x, y), str(i + 1), fill="black", anchor="mm")
+        draw.text((x, y), attrs.get("label") or str(i + 1), fill="black", anchor="mm")
     return image
 
 class build_GIF:
