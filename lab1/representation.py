@@ -202,8 +202,8 @@ def export_igraph(graph: list[list[int]], format: GraphFormat, directed: bool = 
 
 
 if __name__ == "__main__":
-    graph = import_adjacency_matrix("data/adjacency_matrix.txt")
-    # graph = import_incidence_matrix("data/incidence_matrix.txt")
+    # graph = import_adjacency_matrix("lab1/data/adjacency_matrix.txt")
+    graph = import_incidence_matrix("lab1/data/incidence_matrix.txt")
 
     for graph_format in EXPORTS:
         data = convert(graph, graph_format)

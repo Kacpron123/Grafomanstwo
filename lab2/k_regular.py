@@ -64,9 +64,8 @@ if __name__ == "__main__":
     
     graph = generate_k_regular_graph(n, k)
     
-    img = generate_visualization(graph)
     output_filename = f"k_regular_n{n}_k{k}.png"
-    img.save(output_filename)
+    generate_visualization(graph).save(output_filename)
     
     print(f"Wygenerowano losowy graf k-regularny")
     print(f"Liczba wierzchołków: {graph.vcount()}, Liczba krawędzi: {graph.ecount()}")

@@ -13,6 +13,7 @@ sys.path.append(root_dir)
 sys.path.append(os.path.join(root_dir, 'lab1'))
 
 from lab1.representation import GraphFormat, convert
+from lab1.visualization import generate_visualization
 import igraph as ig
 from lab2.graphic_sequence import build_graph_from_graphic_sequence
 
@@ -76,13 +77,12 @@ def print_largest_component_info(graph: ig.Graph) -> None:
 
 
 if __name__ == "__main__":
-    print("--- Zadanie 3 - Ciąg graficzny ---")
-    
-    sequence = [4, 2, 2, 3, 2, 1, 4, 2, 2, 2, 2]
+    print("--- Test Zadania 3 połączonego z Zadaniem 1 (Ciąg graficzny) ---")
+    sequence = [4,4,4,4,4,3,3,3,3,2,1,1]
     
     print(f"Wejściowy ciąg stopni: {sequence}")
     
     graph = build_graph_from_graphic_sequence(sequence)
-    
-    print("\nWynik:")
+    generate_visualization(graph).save("graph.png")
+    print("\nWynik (Listing 1):")
     print_largest_component_info(graph)

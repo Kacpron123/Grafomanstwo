@@ -3,6 +3,8 @@ import igraph as ig
 import math
 from pathlib import Path
 
+from lab1.representation import import_adjacency_matrix
+
 SIZE = 500
 # procent of halfradius
 radius = 0.8 
@@ -101,7 +103,9 @@ def save_cycle_gif(graph: ig.Graph, cycle: list[int], path: Path) -> None:
 
 # examples
 if __name__ == "__main__":
+    from lab1.representation import import_incidence_matrix
     g = ig.Graph.Erdos_Renyi(n=15, p=1, directed=False)
+    g = import_incidence_matrix("lab1/data/incidence_matrix.txt")
     g.es[0]["color"] = "red"
     g.vs[3]["color"] = "green"
     generate_visualization(g).save("graph.png")
