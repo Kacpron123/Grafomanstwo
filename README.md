@@ -17,16 +17,27 @@ Windows (PowerShell):
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-# setup
+# Setup
 Synchronize dependencies and prepare the virtual environment:
 ```bash
 uv sync
 ```
-# Execute scripts as modules:
+# Running scripts
+Scripts can be run directly by path:
 ```sh
-uv run python -m path.to.module
+uv run python lab5/ford_fulkerson.py
+```
+or as modules:
+```sh
+uv run python -m lab5.ford_fulkerson
 ```
 Example:
+
+# Tests
+Tests live in `tests/`, mirroring the `labN` directories.
 ```sh
-uv run python -m lab1.visualization
+uv run pytest                                          # all tests
+uv run pytest tests/lab5                               # one lab
+uv run pytest tests/lab5/test_ford_fulkerson.py        # one file
+uv run pytest tests/lab5 -k bfs                        # tests matching a name
 ```
