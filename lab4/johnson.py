@@ -46,8 +46,8 @@ if __name__ == "__main__":
     from datetime import datetime
     from pathlib import Path
     
-    graph = generate_random_strongly_connected_digraph(num_nodes=10, prob=0.5)
-    add_weights_to_edges(graph, range_weights=(-5, 10))
+    graph = generate_random_strongly_connected_digraph(num_nodes=9, prob=0.7)
+    add_weights_to_edges(graph, range_weights=(-5, 50))
     image = generate_visualization(graph)
     draw = ImageDraw.Draw(image)
     draw.text((10, 10), "Random Strongly Connected Digraph", fill="black")

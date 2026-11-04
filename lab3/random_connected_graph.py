@@ -11,6 +11,7 @@ from lab2.components import components
 from lab1.representation import export_igraph, GraphFormat
 from lab1.visualization import generate_visualization
 from lab1.random_graph.random_graph import add_weights_to_edges
+from lab1.save import save_igraph_png
 
 def generate_random_connected_graph(num_nodes: int, min_num_edges: int, directed: bool = False, range_weights: tuple[int, int] = (1, 10)) -> ig.Graph:
     """
@@ -67,12 +68,7 @@ if __name__ == "__main__":
     num_nodes = 10
     min_num_edges = 5
     graph = generate_random_connected_graph(num_nodes, min_num_edges)
-    image = generate_visualization(graph)
-    
     now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     path = Path("lab3") / "results" / f"random_connected_graph_{now}.png"
-    path.parent.mkdir(parents=True, exist_ok=True)
-    draw = ImageDraw.Draw(image)
-    draw.text((10, 10), f"Random Connected Graph: nodes: {num_nodes}, min_edges: {min_num_edges}", fill="black")
-    image.save(path)
-    
+    text = f"Random Connected Graph: nodes: {graph.vcount()}, edges: {graph.ecount()}"
+    save_igraph_png(graph, path, text)
