@@ -37,8 +37,7 @@ def generate_random_connected_graph(num_nodes: int, min_num_edges: int, directed
         raise ValueError(f"min_num_edges must be in range [0, {num_nodes * (num_nodes - 1) // 2}] for a simple graph.")
 
     graph = export_igraph(generate_random_graph(num_nodes=num_nodes, num_edges=min_num_edges, directed=directed), GraphFormat.ADJACENCY_MATRIX, directed)
-    graph = add_weights_to_edges(graph, range_weights)
-    
+
     while len(set(components(graph))) > 1:  # While the graph is not connected
         # Get the list of connected components
         comp = components(graph)
@@ -59,10 +58,9 @@ def generate_random_connected_graph(num_nodes: int, min_num_edges: int, directed
         graph.add_edge(node1, node2)
 
 
-    # Add random weights to the edges
-    for edge in graph.es:
-        edge["weight"] = random.randint(1, 10)  # Assign a random weight between 1 and 10
-    
+    # Add random weights to all edges, including the ones added above
+    add_weights_to_edges(graph, range_weights)
+
     return graph
 
 if __name__ == "__main__":
