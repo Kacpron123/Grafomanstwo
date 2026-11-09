@@ -10,8 +10,7 @@ from lab1.random_graph.random_graph import generate_random_graph
 from lab2.components import components
 from lab1.representation import export_igraph, GraphFormat
 from lab1.visualization import generate_visualization
-from lab1.random_graph.random_graph import add_weights_to_edges
-from lab1.save import save_igraph_png
+#from lab1.random_graph.random_graph import add_weights_to_edges
 
 def generate_random_connected_graph(num_nodes: int, min_num_edges: int, directed: bool = False, range_weights: tuple[int, int] = (1, 10)) -> ig.Graph:
     """
@@ -37,8 +36,15 @@ def generate_random_connected_graph(num_nodes: int, min_num_edges: int, directed
     if min_num_edges > num_nodes * (num_nodes - 1) // 2:
         raise ValueError(f"min_num_edges must be in range [0, {num_nodes * (num_nodes - 1) // 2}] for a simple graph.")
 
-    graph = export_igraph(generate_random_graph(num_nodes=num_nodes, num_edges=min_num_edges, directed=directed), GraphFormat.ADJACENCY_MATRIX, directed)
-
+    # graph = export_igraph(generate_random_graph(num_nodes=num_nodes, num_edges=min_num_edges, directed=directed), GraphFormat.ADJACENCY_MATRIX, directed)
+    # graph = add_weights_to_edges(graph, range_weights)
+    matrix = generate_random_graph(num_nodes=num_nodes, num_edges=min_num_edges, return_graph_format=GraphFormat.ADJACENCY_MATRIX)
+    graph = export_igraph(matrix, GraphFormat.ADJACENCY_MATRIX)
+    
+    # Dodawanie losowych wag od 1 do 10 do krawędzi
+    for edge in graph.es:
+        edge["weight"] = random.randint(range_weights[0], range_weights[1])
+    
     while len(set(components(graph))) > 1:  # While the graph is not connected
         # Get the list of connected components
         comp = components(graph)
@@ -59,16 +65,22 @@ def generate_random_connected_graph(num_nodes: int, min_num_edges: int, directed
         graph.add_edge(node1, node2)
 
 
-    # Add random weights to all edges, including the ones added above
-    add_weights_to_edges(graph, range_weights)
-
+    # Add random weights to the edges
+    for edge in graph.es:
+        edge["weight"] = random.randint(1, 10)  # Assign a random weight between 1 and 10
+    
     return graph
 
 if __name__ == "__main__":
     num_nodes = 10
     min_num_edges = 5
     graph = generate_random_connected_graph(num_nodes, min_num_edges)
+    image = generate_visualization(graph)
+    
     now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     path = Path("lab3") / "results" / f"random_connected_graph_{now}.png"
-    text = f"Random Connected Graph: nodes: {graph.vcount()}, edges: {graph.ecount()}"
-    save_igraph_png(graph, path, text)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    draw = ImageDraw.Draw(image)
+    draw.text((10, 10), f"Random Connected Graph: nodes: {num_nodes}, min_edges: {min_num_edges}", fill="black")
+    image.save(path)
+    
