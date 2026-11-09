@@ -66,7 +66,6 @@ class RandomFlowNetwork:
             u = random.choice(tails)
             v = random.choice(heads)
 
-            # bez lukow przeciwnych - wymaga tego wzor na c_f(u, v) w Fordzie-Fulkersonie
             if u != v and (u, v) not in self.edges and (v, u) not in self.edges:
                 self.edges.append((u, v))
                 i += 1

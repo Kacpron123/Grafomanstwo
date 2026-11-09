@@ -51,7 +51,7 @@ def kosaraju(G: ig.Graph) -> list[int]:
         G (ig.Graph): A directed graph represented as an igraph.Graph object.
         
     Returns:
-        list[list[int]]: A list of strongly connected components, where each component is represented as a list of node indices.
+        list[int]: Component identifiers for each vertex, where vertices belonging to the same strongly connected component have the same identifier.
     """
     d = [-1] * G.vcount()  # Discovery times of nodes
     f = [-1] * G.vcount()  # Finish times of nodes

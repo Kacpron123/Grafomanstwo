@@ -62,7 +62,7 @@ def generate_visualization(
             outline=color,
             width=3,
         )
-        draw.text((x, y), attrs.get("label") or str(i + 1), fill="black", anchor="mm")
+        draw.text((x, y), attrs.get("label") or str(i+1), fill="black", anchor="mm")
     return image
 
 class build_GIF:
